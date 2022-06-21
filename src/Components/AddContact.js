@@ -1,48 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 
-class AddContact extends React.Component {
-    state = {
-        name: "",
-        email: "",
-    };
+const AddContact = (props) => {
 
-    add = (e) => {
-        e.preventDefault();
+const [contactData, setContactData] = useState({
+    name: "",
+    email: ""
+});
 
-        if (this.state.name === "" || this.state.email === "") {
-            alert("All the fields are mandotory!");
-        }
-    };
-    render() {
-        return (
-            <div className="ui main">
-                <h2>Add Contact</h2>
-                <form className="ui form" onSubmit={this.add}>
-                    <div className="field">
-                        <label>Name</label>
-                        <input 
-                            type="text" 
-                            name="name"
-                            placeholder="Name"
-                            value={this.state.name}
-                            onChange={(e) => this.setState({name: e.target.name})}
-                        />
-                    </div>
-                    <div className="field">
-                        <label>Email</label>
-                        <input 
-                            type="text" 
-                            name="email" 
-                            placeholder="Email"
-                            value={this.state.email}
-                            onChange={(e) => this.setState({email: e.target.email})} 
-                        />
-                    </div>
-                    <button className="ui button blue">Add</button>
-                </form>
-            </div>
-        )
+// Handle onChange event in inputs
+const handleChange = (evt) => {
+    setContactData({
+      ...contactData,
+      [evt.target.name]:  evt.target.value
+    });
+  }
+
+// Function to add the contact details
+const addData = (e) => {
+    e.preventDefault();
+
+    if (contactData.name === "" || contactData.email === "") {
+        alert("All fields should be filled");
+        return;
     }
+
+    props.addContactHandler(contactData);
+    setContactData({name: "", email: ""});
 }
+  return (
+    <div className="ui main">
+      <h2>Add Contact</h2>
+      <form className="ui form" onSubmit={addData}>
+        <div className="field">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={contactData.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="field">
+          <label>Email</label>
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            value={contactData.email}
+            onChange={handleChange}
+          />
+        </div>
+        <button className="ui button blue">Add</button>
+      </form>
+    </div>
+  );
+};
 
 export default AddContact;
