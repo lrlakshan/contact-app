@@ -4,14 +4,19 @@ import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
 
-function App() {
+const App = () => {
 
   const [contacts, setContacts] = useState([]);
+
+  // Function to add new contacts to contacts array
+  const addContactHandler = (contact) => {
+    setContacts([...contacts, contact]);
+  }
 
   return (
     <div>
         <Header />
-        <AddContact />
+        <AddContact addContactHandler = {addContactHandler}/>
         <ContactList contacts = {contacts} />
     </div>
   );
