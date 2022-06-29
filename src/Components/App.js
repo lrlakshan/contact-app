@@ -3,6 +3,7 @@ import './App.css';
 import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
+import {v4} from "uuid";
 
 const App = () => {
 
@@ -11,13 +12,21 @@ const App = () => {
 
   // Function to add new contacts to contacts array
   const addContactHandler = (contact) => {
-    setContacts([...contacts, contact]);
-  }
+    setContacts([...contacts, {id:v4(), ...contact}]);
+  };
+
+  // Function to delete paticular contact using the id and set the remaining contacts to setContacts
+  const deleteContactHandler = (id) => {
+    const newContacts = contacts.filter((contact) => {
+      return id !== contact.id;
+    });
+    setContacts(newContacts);
+  };
 
   // Only calls in the initial render with the contact data on the local storage
   useEffect(() => {
     const retrieveContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (retrieveContacts.length > 0) {
+    if (retrieveContacts !== null && retrieveContacts.length > 0) {
       setContacts(retrieveContacts);
     }
   }, []);
@@ -31,7 +40,7 @@ const App = () => {
     <div>
         <Header />
         <AddContact addContactHandler = {addContactHandler}/>
-        <ContactList contacts = {contacts} />
+        <ContactList contacts = {contacts} retrieveId = {deleteContactHandler}/>
     </div>
   );
 }
