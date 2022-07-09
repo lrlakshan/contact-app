@@ -4,6 +4,7 @@ import './App.css';
 import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
+import ContactDetail from "./ContactDetail";
 import {v4} from "uuid";
 
 const App = () => {
@@ -60,10 +61,12 @@ const App = () => {
                 />
               }
             />
+            <Route
+              path="/contact/:id"
+              element={<ContactDetail></ContactDetail>} 
+            />
           </Routes>
         </Router>
-        {/* <AddContact addContactHandler = {addContactHandler}/>
-        <ContactList contacts = {contacts} retrieveId = {deleteContactHandler}/> */}
     </div>
   );
 }
