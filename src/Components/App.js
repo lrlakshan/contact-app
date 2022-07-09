@@ -5,38 +5,60 @@ import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
 import ContactDetail from "./ContactDetail";
+import api from "../Api/Contacts";
 import {v4} from "uuid";
 
 const App = () => {
 
-  const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
 
+  const retreiveContacts = async () => {
+    const response = await api.get("/contacts");
+    return response.data;
+  }
+
+  const addNewContact = async (newcontact) => {
+    
+    const response = await api.post("/contacts", newcontact);
+    return response.data;
+  }
+
   // Function to add new contacts to contacts array
-  const addContactHandler = (contact) => {
-    setContacts([...contacts, {id:v4(), ...contact}]);
+  const addContactHandler = async (contact) => {
+
+    const request = {
+      id : v4(),
+      ...contact
+    }
+
+    const addedNewContact = await addNewContact(request);
+    setContacts([...contacts, addedNewContact]);
   };
 
   // Function to delete paticular contact using the id and set the remaining contacts to setContacts
-  const deleteContactHandler = (id) => {
+  const deleteContactHandler = async (id) => {
+
+    await api.delete(`/contacts/${id}`);
     const newContacts = contacts.filter((contact) => {
       return id !== contact.id;
     });
     setContacts(newContacts);
   };
 
-  // Only calls in the initial render with the contact data on the local storage
+  // Only calls in the initial render with the contact data from the database
   useEffect(() => {
-    const retrieveContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (retrieveContacts !== null && retrieveContacts.length > 0) {
-      setContacts(retrieveContacts);
-    }
-  }, []);
 
-  // Calls whenever the contacts state is changed
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(contacts));
-  }, [contacts]);
+    const getAllContacts = async () => {
+
+      const allContacts = await retreiveContacts();
+
+      if (allContacts !== null && allContacts.length > 0) {
+        setContacts(allContacts);
+      }
+    }
+
+    getAllContacts();
+  }, []);
 
   return (
     <div>
